@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Outer container with dark rounded background and subtle indigo border -->
+  <rect x="1" y="1" width="30" height="30" rx="9" fill="#0F172A" stroke="#4F46E5" stroke-width="2" stroke-opacity="0.8"/>
+  
+  <!-- Lucide Kanban Icon Paths scaled for 32x32 viewbox -->
+  <g stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 7v14" />
+    <path d="M16 7v8" />
+    <path d="M24 7v18" />
+  </g>
+</svg>
