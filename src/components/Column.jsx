@@ -2,9 +2,25 @@ import React from 'react';
 import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
 
-export default function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask }) {
+export default function Column({ column, tasks, onAddTask, onEditTask, onDeleteTask, onDropTask }) {
+  // Testing native HTML5 drop target with touch event polyfill hook attempt
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData('text/plain');
+    if (taskId && onDropTask) onDropTask(taskId, column.id);
+  };
+
   return (
-    <div className="flex flex-col rounded-2xl bg-slate-900/60 border border-slate-800/90 min-h-[540px]">
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      className="flex flex-col rounded-2xl bg-slate-900/60 border border-slate-800/90 min-h-[540px]"
+    >
       <div className={`flex items-center justify-between px-4 py-3.5 border-b border-slate-800/80 border-t-2 rounded-t-2xl ${column.accentColor}`}>
         <div className="flex items-center gap-2.5">
           <span className={`w-2.5 h-2.5 rounded-full ${column.dotColor}`} />
