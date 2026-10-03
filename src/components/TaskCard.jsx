@@ -4,13 +4,26 @@ import { PRIORITIES } from '../types';
 
 export default function TaskCard({ task, onEdit, onDelete }) {
   const priorityInfo = PRIORITIES[task.priority] || PRIORITIES.medium;
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData('text/plain', task.id);
+    e.dataTransfer.effectAllowed = 'move';
+    // Attempting custom drag image styling to fix Chromium semi-transparent default ghost
+    const dragPreview = e.currentTarget.cloneNode(true);
+    dragPreview.style.position = 'absolute';
+    dragPreview.style.top = '-9999px';
+    document.body.appendChild(dragPreview);
+    try {
+      e.dataTransfer.setDragImage(dragPreview, 20, 20);
+    } catch (err) {
+      console.warn('Failed to set custom drag image', err);
+    }
+    setTimeout(() => document.body.removeChild(dragPreview), 0);
+  };
+
   return (
     <div
       draggable={true}
-      onDragStart={(e) => {
-        e.dataTransfer.setData('text/plain', task.id);
-        e.dataTransfer.effectAllowed = 'move';
-      }}
+      onDragStart={handleDragStart}
       className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm cursor-grab active:cursor-grabbing"
     >
       <div className="flex items-center justify-between gap-2 mb-2.5">
