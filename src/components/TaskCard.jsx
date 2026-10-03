@@ -2,30 +2,12 @@ import React from 'react';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
 import { PRIORITIES } from '../types';
 
+// HTML5 DnD limitation: Mobile Safari completely ignores native HTML5 drag events without third-party polyfills.
+// Decided to deprecate HTML5 DnD approach and architect an in-house Pointer Events engine from scratch.
 export default function TaskCard({ task, onEdit, onDelete }) {
   const priorityInfo = PRIORITIES[task.priority] || PRIORITIES.medium;
-  const handleDragStart = (e) => {
-    e.dataTransfer.setData('text/plain', task.id);
-    e.dataTransfer.effectAllowed = 'move';
-    // Attempting custom drag image styling to fix Chromium semi-transparent default ghost
-    const dragPreview = e.currentTarget.cloneNode(true);
-    dragPreview.style.position = 'absolute';
-    dragPreview.style.top = '-9999px';
-    document.body.appendChild(dragPreview);
-    try {
-      e.dataTransfer.setDragImage(dragPreview, 20, 20);
-    } catch (err) {
-      console.warn('Failed to set custom drag image', err);
-    }
-    setTimeout(() => document.body.removeChild(dragPreview), 0);
-  };
-
   return (
-    <div
-      draggable={true}
-      onDragStart={handleDragStart}
-      className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm cursor-grab active:cursor-grabbing"
-    >
+    <div className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm cursor-grab">
       <div className="flex items-center justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-1.5">
           <GripVertical className="w-4 h-4 text-slate-600" />
