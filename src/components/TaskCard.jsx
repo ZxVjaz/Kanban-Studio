@@ -5,7 +5,14 @@ import { PRIORITIES } from '../types';
 export default function TaskCard({ task, onEdit, onDelete }) {
   const priorityInfo = PRIORITIES[task.priority] || PRIORITIES.medium;
   return (
-    <div className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm">
+    <div
+      draggable={true}
+      onDragStart={(e) => {
+        e.dataTransfer.setData('text/plain', task.id);
+        e.dataTransfer.effectAllowed = 'move';
+      }}
+      className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm cursor-grab active:cursor-grabbing"
+    >
       <div className="flex items-center justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-1.5">
           <GripVertical className="w-4 h-4 text-slate-600" />
