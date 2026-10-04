@@ -2,12 +2,14 @@ import React from 'react';
 import { GripVertical, Pencil, Trash2 } from 'lucide-react';
 import { PRIORITIES } from '../types';
 
-// HTML5 DnD limitation: Mobile Safari completely ignores native HTML5 drag events without third-party polyfills.
-// Decided to deprecate HTML5 DnD approach and architect an in-house Pointer Events engine from scratch.
-export default function TaskCard({ task, onEdit, onDelete }) {
+export default function TaskCard({ task, onEdit, onDelete, onPointerDown }) {
   const priorityInfo = PRIORITIES[task.priority] || PRIORITIES.medium;
   return (
-    <div className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 shadow-sm cursor-grab">
+    <div
+      data-task-id={task.id}
+      onPointerDown={(e) => onPointerDown?.(e, task)}
+      className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 select-none cursor-grab active:cursor-grabbing"
+    >
       <div className="flex items-center justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-1.5">
           <GripVertical className="w-4 h-4 text-slate-600" />
