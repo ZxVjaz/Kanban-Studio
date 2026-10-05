@@ -15,10 +15,13 @@ export function useKanban() {
 
   const handleCardPointerDown = useCallback((e, task) => {
     const cardEl = e.currentTarget;
-    try {
-      cardEl.setPointerCapture(e.pointerId);
-    } catch (err) {
-      console.warn('Pointer capture failed:', err);
+    // Discovered issue: on mobile touch devices, default pointer capture locks events to the element,
+    // preventing window listeners from receiving continuous drag updates when finger moves fast.
+    // Explicitly release pointer capture to allow smooth window listener tracking.
+    if (cardEl.hasPointerCapture?.(e.pointerId)) {
+      try {
+        cardEl.releasePointerCapture(e.pointerId);
+      } catch {}
     }
     setActiveSession({ pointerId: e.pointerId, task, x: e.clientX, y: e.clientY });
   }, []);
