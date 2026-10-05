@@ -7,7 +7,10 @@ export default function TaskCard({ task, onEdit, onDelete, onPointerDown }) {
   return (
     <div
       data-task-id={task.id}
+      draggable={false}
+      onDragStart={(e) => e.preventDefault()}
       onPointerDown={(e) => onPointerDown?.(e, task)}
+      style={{ touchAction: 'none' }}
       className="group relative rounded-xl border border-slate-800 bg-slate-900/95 p-4 select-none cursor-grab active:cursor-grabbing"
     >
       <div className="flex items-center justify-between gap-2 mb-2.5">
