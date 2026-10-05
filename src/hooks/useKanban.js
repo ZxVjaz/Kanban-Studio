@@ -3,7 +3,7 @@ import { loadTasksFromStorage, saveTasksToStorage } from '../utils/storage';
 
 export function useKanban() {
   const [tasks, setTasks] = useState(() => loadTasksFromStorage());
-  const [dragCoords, setDragCoords] = useState(null);
+  const [activeSession, setActiveSession] = useState(null);
 
   useEffect(() => {
     saveTasksToStorage(tasks);
@@ -14,28 +14,19 @@ export function useKanban() {
   }, [tasks]);
 
   const handleCardPointerDown = useCallback((e, task) => {
-    setDragCoords({ x: e.clientX, y: e.clientY, task });
+    const cardEl = e.currentTarget;
+    try {
+      cardEl.setPointerCapture(e.pointerId);
+    } catch (err) {
+      console.warn('Pointer capture failed:', err);
+    }
+    setActiveSession({ pointerId: e.pointerId, task, x: e.clientX, y: e.clientY });
   }, []);
-
-  useEffect(() => {
-    if (!dragCoords) return;
-    const onMove = (e) => {
-      setDragCoords(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null);
-    };
-    const onUp = () => setDragCoords(null);
-
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-    };
-  }, [dragCoords]);
 
   return {
     tasks,
     getColumnTasks,
-    dragCoords,
+    activeSession,
     onCardPointerDown: handleCardPointerDown,
   };
 }
