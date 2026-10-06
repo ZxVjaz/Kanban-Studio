@@ -3,9 +3,21 @@ import { loadTasksFromStorage, saveTasksToStorage } from '../utils/storage';
 
 export function useKanban() {
   const [tasks, setTasks] = useState(() => loadTasksFromStorage());
-  // Performance bottleneck observed: calling setState(coords) at 120Hz/60Hz fires
-  // full component tree reconciliation on every pointer move event, causing jittery lag.
-  const [activeSession, setActiveSession] = useState(null);
+
+  // Mutable pointer session ref to prevent stale closures and avoid unnecessary re-renders
+  const sessionRef = useRef({
+    active: false,
+    isDragging: false,
+    pointerId: null,
+    taskId: null,
+    taskData: null,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+    offsetX: 0,
+    offsetY: 0,
+  });
 
   useEffect(() => {
     saveTasksToStorage(tasks);
@@ -18,7 +30,7 @@ export function useKanban() {
   return {
     tasks,
     getColumnTasks,
-    activeSession,
+    sessionRef,
     onCardPointerDown: () => {},
   };
 }
