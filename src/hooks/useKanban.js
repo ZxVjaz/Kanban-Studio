@@ -4,7 +4,6 @@ import { loadTasksFromStorage, saveTasksToStorage } from '../utils/storage';
 export function useKanban() {
   const [tasks, setTasks] = useState(() => loadTasksFromStorage());
 
-  // Mutable pointer session ref to prevent stale closures and avoid unnecessary re-renders
   const sessionRef = useRef({
     active: false,
     isDragging: false,
@@ -20,8 +19,15 @@ export function useKanban() {
   });
 
   useEffect(() => {
-    saveTasksToStorage(tasks);
-  }, [tasks]);
+    const onMove = (e) => {
+      const s = sessionRef.current;
+      if (!s.active || e.pointerId !== s.pointerId) return;
+      s.currentX = e.clientX;
+      s.currentY = e.clientY;
+    };
+    window.addEventListener('pointermove', onMove, { passive: false });
+    return () => window.removeEventListener('pointermove', onMove);
+  }, []);
 
   const getColumnTasks = useCallback((columnId) => {
     return tasks.filter(t => t.columnId === columnId).sort((a, b) => a.order - b.order);
