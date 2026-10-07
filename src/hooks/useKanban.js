@@ -3,6 +3,8 @@ import { loadTasksFromStorage, saveTasksToStorage } from '../utils/storage';
 
 export function useKanban() {
   const [tasks, setTasks] = useState(() => loadTasksFromStorage());
+  const [dragState, setDragState] = useState({ isDragging: false, taskId: null, taskData: null, width: 0, height: 0 });
+  const ghostRef = useRef(null);
 
   const sessionRef = useRef({
     active: false,
@@ -16,17 +18,16 @@ export function useKanban() {
     currentY: 0,
     offsetX: 0,
     offsetY: 0,
+    rafId: null,
   });
 
-  useEffect(() => {
-    const onMove = (e) => {
-      const s = sessionRef.current;
-      if (!s.active || e.pointerId !== s.pointerId) return;
-      s.currentX = e.clientX;
-      s.currentY = e.clientY;
-    };
-    window.addEventListener('pointermove', onMove, { passive: false });
-    return () => window.removeEventListener('pointermove', onMove);
+  const updateGhostDomPosition = useCallback(() => {
+    const s = sessionRef.current;
+    if (ghostRef.current && s.isDragging) {
+      const x = s.currentX - s.offsetX;
+      const y = s.currentY - s.offsetY;
+      ghostRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
   }, []);
 
   const getColumnTasks = useCallback((columnId) => {
@@ -35,8 +36,9 @@ export function useKanban() {
 
   return {
     tasks,
+    dragState,
+    ghostRef,
     getColumnTasks,
-    sessionRef,
     onCardPointerDown: () => {},
   };
 }
