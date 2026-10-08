@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { loadTasksFromStorage, saveTasksToStorage } from '../utils/storage';
 
-// Bug analysis: Clicking the edit or delete button on a card immediately triggered dragging
-// because onPointerDown on the parent fired before onClick on the child button.
+const DRAG_THRESHOLD_PX = 5;
+
 export function useKanban() {
   const [tasks, setTasks] = useState(() => loadTasksFromStorage());
   const [dragState, setDragState] = useState({ isDragging: false, taskId: null, taskData: null, width: 0, height: 0 });
@@ -14,6 +14,10 @@ export function useKanban() {
     pointerId: null,
     taskId: null,
     taskData: null,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
   });
 
   const getColumnTasks = useCallback((columnId) => {
