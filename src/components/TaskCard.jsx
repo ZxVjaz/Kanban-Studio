@@ -25,7 +25,7 @@ export default function TaskCard({ task, onEdit, onDelete, onPointerDown, isGhos
           </span>
         </div>
         {!isGhost && (
-          <div className="flex items-center gap-1">
+          <div data-no-drag="true" className="flex items-center gap-1">
             <button type="button" onClick={() => onEdit?.(task)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400">
               <Pencil className="w-3.5 h-3.5" />
             </button>
