@@ -10,14 +10,33 @@ export function useKanban() {
 
   const calculateDropTarget = useCallback((clientX, clientY) => {
     const columnNodes = document.querySelectorAll('[data-column-id]');
+    let matchedColumnId = null;
+
     for (let i = 0; i < columnNodes.length; i++) {
       const colEl = columnNodes[i];
       const rect = colEl.getBoundingClientRect();
       if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
-        return { columnId: colEl.getAttribute('data-column-id'), index: 0 };
+        matchedColumnId = colEl.getAttribute('data-column-id');
+        break;
       }
     }
-    return null;
+
+    if (!matchedColumnId) {
+      let minDist = Infinity;
+      for (let i = 0; i < columnNodes.length; i++) {
+        const colEl = columnNodes[i];
+        const rect = colEl.getBoundingClientRect();
+        if (clientY >= rect.top - 60 && clientY <= rect.bottom + 60) {
+          const dist = clientX < rect.left ? rect.left - clientX : clientX > rect.right ? clientX - rect.right : 0;
+          if (dist < minDist && dist < 90) {
+            minDist = dist;
+            matchedColumnId = colEl.getAttribute('data-column-id');
+          }
+        }
+      }
+    }
+
+    return matchedColumnId ? { columnId: matchedColumnId, index: 0 } : null;
   }, []);
 
   const getColumnTasks = useCallback((columnId) => {
