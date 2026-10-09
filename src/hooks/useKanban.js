@@ -10,33 +10,37 @@ export function useKanban() {
 
   const calculateDropTarget = useCallback((clientX, clientY) => {
     const columnNodes = document.querySelectorAll('[data-column-id]');
+    let matchedColumnEl = null;
     let matchedColumnId = null;
 
     for (let i = 0; i < columnNodes.length; i++) {
       const colEl = columnNodes[i];
       const rect = colEl.getBoundingClientRect();
       if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+        matchedColumnEl = colEl;
         matchedColumnId = colEl.getAttribute('data-column-id');
         break;
       }
     }
 
-    if (!matchedColumnId) {
-      let minDist = Infinity;
+    if (!matchedColumnEl) {
+      let minHorizontalDist = Infinity;
       for (let i = 0; i < columnNodes.length; i++) {
         const colEl = columnNodes[i];
         const rect = colEl.getBoundingClientRect();
         if (clientY >= rect.top - 60 && clientY <= rect.bottom + 60) {
           const dist = clientX < rect.left ? rect.left - clientX : clientX > rect.right ? clientX - rect.right : 0;
-          if (dist < minDist && dist < 90) {
-            minDist = dist;
+          if (dist < minHorizontalDist && dist < 90) {
+            minHorizontalDist = dist;
+            matchedColumnEl = colEl;
             matchedColumnId = colEl.getAttribute('data-column-id');
           }
         }
       }
     }
 
-    return matchedColumnId ? { columnId: matchedColumnId, index: 0 } : null;
+    if (!matchedColumnEl || !matchedColumnId) return null;
+    return { columnId: matchedColumnId, index: 0 };
   }, []);
 
   const getColumnTasks = useCallback((columnId) => {
