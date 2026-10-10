@@ -27,20 +27,24 @@ export function useKanban() {
 
     const cardNodes = matchedColumnEl.querySelectorAll('[data-task-id]');
     let insertionIndex = 0;
+    let validCardIndex = 0;
     let foundPosition = false;
 
     for (let i = 0; i < cardNodes.length; i++) {
       const node = cardNodes[i];
+      if (node.getAttribute('data-task-id') === draggedTaskId) continue;
+
       const cardRect = node.getBoundingClientRect();
       const cardMiddleY = cardRect.top + cardRect.height / 2;
 
       if (!foundPosition && clientY < cardMiddleY) {
-        insertionIndex = i;
+        insertionIndex = validCardIndex;
         foundPosition = true;
       }
+      validCardIndex++;
     }
 
-    if (!foundPosition) insertionIndex = cardNodes.length;
+    if (!foundPosition) insertionIndex = validCardIndex;
 
     return { columnId: matchedColumnId, index: insertionIndex };
   }, []);
