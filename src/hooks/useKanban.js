@@ -378,15 +378,18 @@ export function useKanban() {
     };
 
     const onWindowPointerUp = (e) => endPointerSession(e, true);
+    const onWindowPointerCancel = (e) => endPointerSession(e, false);
 
     window.addEventListener('pointermove', onWindowPointerMove, {
       passive: false,
     });
     window.addEventListener('pointerup', onWindowPointerUp);
+    window.addEventListener('pointercancel', onWindowPointerCancel);
 
     return () => {
       window.removeEventListener('pointermove', onWindowPointerMove);
       window.removeEventListener('pointerup', onWindowPointerUp);
+      window.removeEventListener('pointercancel', onWindowPointerCancel);
     };
   }, [calculateDropTarget, moveTask, updateGhostDomPosition]);
 
