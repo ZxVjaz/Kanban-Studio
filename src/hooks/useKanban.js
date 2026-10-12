@@ -396,6 +396,7 @@ export function useKanban() {
   // Pointer down handler on task card
   const handleCardPointerDown = useCallback(
     (e, task) => {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
       if (e.target.closest('[data-no-drag="true"]')) return;
 
       const cardEl = e.currentTarget;
