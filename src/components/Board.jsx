@@ -3,11 +3,20 @@ import { COLUMNS } from '../types';
 import Column from './Column';
 import TaskCard from './TaskCard';
 
-export default function Board({ getColumnTasks, dragState, ghostRef, onCardPointerDown, onAddTask, onEditTask, onDeleteTask }) {
+export default function Board({
+  getColumnTasks,
+  dragState,
+  ghostRef,
+  onCardPointerDown,
+  onAddTask,
+  onEditTask,
+  onDeleteTask,
+}) {
   return (
     <div className="relative">
+      {/* 3-Column Kanban Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {COLUMNS.map(column => (
+        {COLUMNS.map((column) => (
           <Column
             key={column.id}
             column={column}
@@ -20,8 +29,9 @@ export default function Board({ getColumnTasks, dragState, ghostRef, onCardPoint
           />
         ))}
       </div>
-      {/* Hardware-Accelerated Floating Ghost Card */}
-      {dragState?.isDragging && dragState?.taskData && (
+
+      {/* Hardware-Accelerated Floating Ghost Card (Direct DOM Transform via ghostRef) */}
+      {dragState.isDragging && dragState.taskData && (
         <div
           ref={ghostRef}
           style={{
