@@ -1,4 +1,4 @@
-# Kanban Board
+# Kanban Studio
 
 A lightweight, modern, and responsive personal task manager built with React 18, Tailwind CSS, and standard Pointer Events. It provides a frictionless Kanban workflow that runs entirely client-side with offline-first persistence in `localStorage`.
 
@@ -38,8 +38,8 @@ A lightweight, modern, and responsive personal task manager built with React 18,
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-username>/kanban-board.git
-   cd kanban-board
+   git clone https://github.com/ZxVjaz/Kanban-Studio.git
+   cd Kanban-Studio               
    ```
 
 2. Install dependencies:
